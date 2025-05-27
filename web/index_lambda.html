@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charla FP</title>
+    <style>                
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilos del cuerpo */
+        body {
+            background-color: #f7f2f9; /* Fondo lila pastel */
+            color: #333; /* Color de texto oscuro */
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Estilo del título */
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Estilo del botón */
+        button {
+            background-color: #b3d4fc; /* Azul pastel suave */
+            color: #333;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #9ac7f5; /* Azul pastel un poco más oscuro */
+            transform: scale(1.05);
+        }
+
+        /* Contenedor para la respuesta de la Lambda */
+        #lambdaResponse {
+            background-color: #ffe5ec; /* Rosa pastel claro */
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 1.1em;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            min-width: 250px;
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Invocación de Lambda</h1>
+
+    <button id="invokeLambdaButton">Invocar Lambda</button>
+
+    <p id="lambdaResponse"></p>
+
+    <script>
+        const lambdaUrl = "PUT_HERE_THE_LAMBDA_URL";
+
+        async function invokeLambda() {
+            try {
+
+                const response = await fetch(lambdaUrl);
+                if (!response.ok) {
+                    throw new Error("Error en la invocación de la Lambda");
+                }
+                const data = await response.json();
+                var element = document.getElementById("lambdaResponse")
+                element.innerText = data.message;
+                element.style.display = "block";
+            } catch (error) {
+                var element = document.getElementById("lambdaResponse")
+                element.innerText = `Error: ${error.message}`;
+                element.style.display = "block";
+            }
+        }
+        document.getElementById("invokeLambdaButton").addEventListener("click", invokeLambda);
+    </script>
+</body>
+</html>

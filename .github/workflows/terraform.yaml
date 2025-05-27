@@ -1,0 +1,62 @@
+
+# GitHub Action for publishing Helm charts
+name: Terraform
+
+# Dispatch on-demand with choice input
+on:
+  workflow_dispatch:
+    inputs:
+      tf_action:
+        type: choice
+        description: Terraform action
+        options: 
+        - apply
+        - destroy
+
+# Needed permissions to perform the Github Action
+permissions:
+  contents: write
+  id-token: write
+
+# Environment variables to connect to the AWS cloud platform
+env: 
+  AWS_REGION: eu-west-3
+  AWS_ACCOUNT: "386648197017"
+  AWS_AUDIENCE: sts.amazonaws.com
+  AWS_ROLE: arn:aws:iam::386648197017:role/fp-talk-javi-demo
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    # Use the Bash shell 
+    defaults:
+      run:
+        shell: bash
+    steps:
+    
+    # Configure aws credentials using OIDC
+    - name: AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4.1.0
+      with:
+        aws-region: ${{ env.AWS_REGION }}
+        audience: ${{ env.AWS_AUDIENCE }}
+        role-to-assume: ${{ env.AWS_ROLE }}
+
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # Install the latest version of Terraform
+    - name: Setup Terraform
+      uses:  hashicorp/setup-terraform@v3
+
+    # Terraform init to download providers, configure backend, etc...
+    - name: Terraform Init
+      run: terraform init
+    
+    # Terraform action to perform
+    - name: Terraform ${{ github.event.inputs.tf_action }}
+      run:  terraform ${{ github.event.inputs.tf_action }} -auto-approve -var="bucket_name=${{ vars.BUCKET_NAME }}" -var="lambda_name=${{ vars.LAMBDA_NAME }}"
+
+        
