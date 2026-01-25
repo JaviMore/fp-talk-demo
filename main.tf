@@ -55,7 +55,7 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 resource "aws_s3_object" "object" {
   bucket       = aws_s3_bucket.web.id
   key          = "index.html"
-  source       = "web/index_lambda.html" # CHANGE THE INDEX FILE
+  source       = "web/index.html" # CHANGE THE INDEX FILE
   content_type = "text/html"
 }
 
@@ -63,7 +63,7 @@ resource "aws_s3_object" "object" {
 
 # Crear el rol de ejecución para la Lambda
 resource "aws_iam_role" "lambda_exec_role" {
-  name =  "${var.lambda_name}-role"
+  name = "${var.lambda_name}-role"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [

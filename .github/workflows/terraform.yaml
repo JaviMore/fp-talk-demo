@@ -20,10 +20,8 @@ permissions:
 
 # Environment variables to connect to the AWS cloud platform
 env: 
-  AWS_REGION: eu-west-3
-  AWS_ACCOUNT: "386648197017"
-  AWS_AUDIENCE: sts.amazonaws.com
-  AWS_ROLE: arn:aws:iam::386648197017:role/fp-talk-javi-demo
+  AWS_REGION: eu-west-1
+  AWS_ROLE: ${{ secrets.AWS_ROLE }}
 
 jobs:
   terraform:
@@ -37,10 +35,11 @@ jobs:
     
     # Configure aws credentials using OIDC
     - name: AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4.1.0
+      uses: aws-actions/configure-aws-credentials@v5.1.1
       with:
+        audience: sts.amazonaws.com
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
         aws-region: ${{ env.AWS_REGION }}
-        audience: ${{ env.AWS_AUDIENCE }}
         role-to-assume: ${{ env.AWS_ROLE }}
 
     # Checkout the repository to the GitHub Actions runner
