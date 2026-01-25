@@ -55,7 +55,7 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 resource "aws_s3_object" "object" {
   bucket       = aws_s3_bucket.web.id
   key          = "index.html"
-  source       = "web/index.html" # CHANGE THE INDEX FILE
+  source       = "web/index_lambda.html" # CHANGE THE INDEX FILE
   content_type = "text/html"
 }
 
